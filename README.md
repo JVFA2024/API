@@ -1,1 +1,1 @@
-This is the deployment URL https://inquisitive-zipper-fly.cyclic.app
+This is the deployment URL using Cyclic https://inquisitive-zipper-fly.cyclic.app
