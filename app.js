@@ -19,19 +19,17 @@ const User = mongoose.model('User', { name: String });
 
 app.listen(4000, ()=> console.log("the server is running on port 4000"));
 
+app.get('/', (req, res)=>{
 
+  res.send("Welcome to my first RESTful API");
+ 
+ });
   // Health check route
   app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok', message: 'Service is up and running' });
   });
   
 
-
-app.get('/', (req, res)=>{
-
- res.send("Welcome to my first RESTful API");
-
-})
 
 app.get('/api/users', async (req, res) => {
   try {
