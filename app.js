@@ -27,7 +27,7 @@ app.listen(4000, ()=> console.log("the server is running on port 4000"));
   
 
 
-app.get('/api', (req, res)=>{
+app.get('/', (req, res)=>{
 
  res.send("Welcome to my first RESTful API");
 
