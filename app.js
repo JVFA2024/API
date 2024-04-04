@@ -21,7 +21,7 @@ app.listen(4000, ()=> console.log("the server is running on port 4000"));
 
 app.get('/', (req, res)=>{
 
-  res.send("Welcome to my first RESTful API");
+  res.send("Welcome to Jana Virtual Financial Assistant ");
  
  });
   // Health check route
