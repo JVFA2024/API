@@ -131,9 +131,31 @@ app.get('/user-data', authenticateToken, async (req, res) => {
 
 // Add this route to handle logout
 app.post('/logout', (req, res) => {
-  // Simply respond with a success message, no need to invalidate the token as it's stateless
-  res.status(200).send({ message: 'Logged out successfully' });
+  console.log("function called successfully");
+  try {
+    // Since there is no session management, simply respond with success
+    res.status(200).send({ message: 'Logged out successfully' });
+    console.log("logout successfully");
+  } catch (error) {
+    console.log("logout not successfully");
+    console.error('Logout failed:', error);
+    res.status(500).send({ error: 'Logout failed' });
+  }
 });
+
+
+// Add this route to handle logout
+
+// app.post('/logout', (req, res) => {
+//   console.log("function called successfully")
+//   try {
+//     // Since there is no session management, simply respond with success
+//     res.status(200).console.log("logout successfully");
+//   } catch (error) {
+//     console.error('Logout failed:', error);
+//     res.status(500).console.log("Logout failed");
+//   }
+// });
 
 
 
