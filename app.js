@@ -6,9 +6,17 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const User = require('./models/Users');
 const PORT = process.env.PORT || 3000;
+const axios = require('axios');
 // const stringSimilarity = require('string-similarity');
 app.use(express.json());
 app.use(cors());
+
+const corsOptions = {
+  origin: 'http://localhost:5173', // Adjust as per your React app's URL
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
 
 mongoose.connect(process.env.DB_URI)
   .then(() => console.log('MongoDB Connected'))
@@ -16,6 +24,7 @@ mongoose.connect(process.env.DB_URI)
 
 
 app.listen(PORT, ()=> console.log("the server is running on port 3000"));
+
 
 
 app.get('/', (req, res)=>{
@@ -107,6 +116,19 @@ app.get('/user-data', authenticateToken, async (req, res) => {
 //     res.status(500).send({ error: 'Logout failed' });
 //   }
 // });
+
+
+app.post('/api/general_query', authenticateToken, async (req, res) => {
+  try {
+      const { query } = req.body;
+      const response = await axios.post('http://localhost:5000/general_query', { query });
+      res.json(response.data);
+  } catch (error) {
+      console.error('Error calling Flask API:', error);
+      res.status(500).json({ error: 'Failed to process query' });
+  }
+});
+
 app.get('/userbalance', authenticateToken, async (req, res) => {
   try {
     // The user's ID is extracted from the token in the authenticateToken middleware
@@ -129,15 +151,12 @@ app.get('/userbalance', authenticateToken, async (req, res) => {
 app.get('/recent_transactions', authenticateToken, async (req, res) => {
   try {
     const userId = req.user._id;
-    console.log("User ID:", userId);
     const user = await User.findById(userId).select('+transactions');
-    console.log("Fetched User:", user);
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    console.log("User Transactions:", user.transactions);
     if (!user.transactions || user.transactions.length === 0) {
       return res.status(404).json({ error: 'No transactions found' });
     }
@@ -148,3 +167,24 @@ app.get('/recent_transactions', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching user transactions.' });
   }
 });
+
+app.get('/user_spendings', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId).select('+spendings');
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (!user.spendings || user.spendings.length === 0) {
+      return res.status(404).json({ error: 'No spendings found' });
+    }
+
+    res.status(200).json({ spendings: user.spendings });
+  } catch (err) {
+    console.error('Server Error:', err);
+    res.status(500).json({ error: 'An error occurred while fetching user spendings.' });
+  }
+});
+

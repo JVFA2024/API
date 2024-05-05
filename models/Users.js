@@ -2,21 +2,28 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+
 const transactionSchema = new mongoose.Schema({
-  transactionId: { type: String, required: true },
   date: { type: Date, required: true },
   amount: { type: Number, required: true },
-  type: { type: String, enum: ['debit', 'credit'], required: true },
-  description: { type: String, required: true }
+  description: { type: String, required: true },
+  category: { type: String, required: true }
 });
 
+const spendingSchema = new mongoose.Schema({
+  date: { type: Date, required: true },
+  amount: { type: Number, required: true },
+  description: { type: String, required: true },
+  category: { type: String, required: true }
+});
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  accountBalance: { type: Number, default: 0 }, // Added account balance with a default of 0
+  accountBalance: { type: Number, default: 0 },
   accountNumber: { type: String, required: true, unique: true },
-  transactions: [transactionSchema]
+  transactions: [transactionSchema],
+  spendings: [spendingSchema]
 });
 
 
@@ -34,3 +41,4 @@ userSchema.methods.comparePassword = function(candidatePassword) {
 };
 
 module.exports = mongoose.model('User', userSchema);
+
