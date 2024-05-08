@@ -103,26 +103,38 @@ app.get('/user-data', authenticateToken, async (req, res) => {
   }
 });
 
-// Add this route to handle logout
-// app.post('/logout', (req, res) => {
-//   console.log("function called successfully");
+// app.post('/api/general_query', authenticateToken, async (req, res) => {
 //   try {
-//     // Since there is no session management, simply respond with success
-//     res.status(200).send({ message: 'Logged out successfully' });
-//     console.log("logout successfully");
+//       const { prompt } = req.body;
+//       console.log(prompt)
+//       const response = await fetch("http://127.0.0.1:5000/general_query", {
+//       method: "POST",
+//       headers: {
+//        "Content-Type": "application/json",
+//   },
+//   body: JSON.stringify({ prompt }),
+// });
+//     const data = await response.json();
+//     return res.json({data})
 //   } catch (error) {
-//     console.log("logout not successfully");
-//     console.error('Logout failed:', error);
-//     res.status(500).send({ error: 'Logout failed' });
+//       console.error('Error calling Flask API:', error);
+//       res.status(500).json({ error: 'Failed to process query' });
 //   }
 // });
 
-
 app.post('/api/general_query', authenticateToken, async (req, res) => {
   try {
-      const { query } = req.body;
-      const response = await axios.post('http://localhost:5000/general_query', { query });
-      res.json(response.data);
+      const { prompt } = req.body;  // Make sure 'query' is being sent by the client
+      console.log("Sending query to Flask:", prompt);
+      const response = await fetch("http://127.0.0.1:5000/general_query", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt: prompt }),  // Ensure this matches the Flask expectation
+      });
+      const data = await response.json();
+      return res.json({data})
   } catch (error) {
       console.error('Error calling Flask API:', error);
       res.status(500).json({ error: 'Failed to process query' });
@@ -188,3 +200,5 @@ app.get('/user_spendings', authenticateToken, async (req, res) => {
   }
 });
 
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjFjZDRiMzczY2NhY2IyODQ0YmExZmYiLCJpYXQiOjE3MTUwOTMyNjB9.wcYSaVOFRzFRr0BR33SNIa5yO-lxWCJ5EMKc9xl7EWg
