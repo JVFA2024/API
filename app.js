@@ -103,25 +103,6 @@ app.get('/user-data', authenticateToken, async (req, res) => {
   }
 });
 
-// app.post('/api/general_query', authenticateToken, async (req, res) => {
-//   try {
-//       const { prompt } = req.body;
-//       console.log(prompt)
-//       const response = await fetch("http://127.0.0.1:5000/general_query", {
-//       method: "POST",
-//       headers: {
-//        "Content-Type": "application/json",
-//   },
-//   body: JSON.stringify({ prompt }),
-// });
-//     const data = await response.json();
-//     return res.json({data})
-//   } catch (error) {
-//       console.error('Error calling Flask API:', error);
-//       res.status(500).json({ error: 'Failed to process query' });
-//   }
-// });
-
 app.post('/api/general_query', authenticateToken, async (req, res) => {
   try {
       const { prompt } = req.body;  // Make sure 'query' is being sent by the client
@@ -199,6 +180,39 @@ app.get('/user_spendings', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching user spendings.' });
   }
 });
+
+
+// Route to add an appointment
+app.post('/appointments', authenticateToken, async (req, res) => {
+  try {
+    const { fullname, nationalID, accountNumber, serviceType, appointmentDate } = req.body;
+    
+    // Find the user by ID
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).send({ error: 'User not found' });
+    }
+
+    // Create new appointment
+    const newAppointment = {
+      fullname,
+      nationalID,
+      accountNumber,
+      serviceType,
+      appointmentDate: new Date(appointmentDate)
+    };
+
+    // Add to the user's appointments
+    user.appointments.push(newAppointment);
+    await user.save();
+    console.log("Appointment submitted")
+    res.status(201).send(newAppointment);
+  } catch (error) {
+    console.error('Error adding appointment:', error);
+    res.status(500).send({ error: 'Failed to add appointment' });
+  }
+});
+
 
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjFjZDRiMzczY2NhY2IyODQ0YmExZmYiLCJpYXQiOjE3MTUwOTMyNjB9.wcYSaVOFRzFRr0BR33SNIa5yO-lxWCJ5EMKc9xl7EWg
