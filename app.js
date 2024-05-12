@@ -38,17 +38,6 @@ app.get('/', (req, res)=>{
   });
   
 
-
-app.get('/api/users', async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.json(users);
-  } catch (err) {
-    console.error('There is an error:', err);
-    res.status(500).send('Error retrieving users from database');
-  }
-});
-
 // Login route
 app.post('/login', async (req, res) => {
   console.log("login successfully");
@@ -115,6 +104,7 @@ app.post('/api/general_query', authenticateToken, async (req, res) => {
           body: JSON.stringify({ prompt: prompt }),  // Ensure this matches the Flask expectation
       });
       const data = await response.json();
+      console.log("receiving data:", data);
       return res.json({data})
   } catch (error) {
       console.error('Error calling Flask API:', error);
