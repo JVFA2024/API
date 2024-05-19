@@ -17,22 +17,26 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-
+//Connection to mongoDB 
 mongoose.connect(process.env.DB_URI)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
 
+//Check if the server is up and running 
 app.listen(PORT, ()=> console.log("the server is running on port 3000"));
 
 
 
+//General check route  
 app.get('/', (req, res)=>{
 
   res.send("Welcome to Jana Virtual Financial Assistant");
  
  });
-  // Health check route
+
+
+//Health check route
   app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok', message: 'Service is up and running' });
   });
@@ -40,10 +44,10 @@ app.get('/', (req, res)=>{
 
 // Login route
 app.post('/login', async (req, res) => {
-  console.log("login successfully");
+  console.log("login successfully");  
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ username }); // Find user by username and password
+    const user = await User.findOne({ username }); // Find user by username
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).send({ error: 'Login failed!' });
     }
@@ -67,34 +71,11 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-app.get('/user-data', authenticateToken, async (req, res) => {
-  console.log("user data ");
-  try {
-    // The user's ID is extracted from the token in the authenticateToken middleware
-    const userId = req.user._id;
-    const user = await User.findById(userId);
 
-    if (!user) {
-      return res.status(404).send({ error: 'User not found' });
-    }
-
-    // Send back the user data you need on the frontend. Adjust according to your user model.
-    // For example, sending back email, accountNumber, and accountBalance
-    res.status(200).send({
-      email: user.email,
-      accountNumber: user.accountNumber,
-      accountBalance: user.accountBalance,
-      // You can include other user-related data here as needed
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: 'An error occurred while fetching user data.' });
-  }
-});
-
+//AI data exchange route (react and python)
 app.post('/api/general_query', authenticateToken, async (req, res) => {
   try {
-      const { prompt } = req.body;  // Make sure 'query' is being sent by the client
+      const { prompt } = req.body;  // Make sure 'prompt' is being sent by the client
       console.log("Sending query to Flask:", prompt);
       const response = await fetch("http://127.0.0.1:5000/general_query", {
           method: "POST",
@@ -112,6 +93,8 @@ app.post('/api/general_query', authenticateToken, async (req, res) => {
   }
 });
 
+
+//Fetch user balance route 
 app.get('/userbalance', authenticateToken, async (req, res) => {
   try {
     // The user's ID is extracted from the token in the authenticateToken middleware
@@ -131,6 +114,9 @@ app.get('/userbalance', authenticateToken, async (req, res) => {
   }
 });
 
+
+
+//Fetch user transactions route 
 app.get('/recent_transactions', authenticateToken, async (req, res) => {
   try {
     const userId = req.user._id;
@@ -151,6 +137,9 @@ app.get('/recent_transactions', authenticateToken, async (req, res) => {
   }
 });
 
+
+
+//Fetch user spending route 
 app.get('/user_spendings', authenticateToken, async (req, res) => {
   try {
     const userId = req.user._id;
@@ -204,5 +193,3 @@ app.post('/appointments', authenticateToken, async (req, res) => {
 });
 
 
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjFjZDRiMzczY2NhY2IyODQ0YmExZmYiLCJpYXQiOjE3MTUwOTMyNjB9.wcYSaVOFRzFRr0BR33SNIa5yO-lxWCJ5EMKc9xl7EWg
