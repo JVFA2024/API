@@ -7,7 +7,6 @@ const cors = require('cors');
 const User = require('./models/Users');
 const PORT = process.env.PORT || 3000;
 const axios = require('axios');
-// const stringSimilarity = require('string-similarity');
 app.use(express.json());
 app.use(cors());
 
