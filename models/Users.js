@@ -25,13 +25,7 @@ const spendingSchema = new mongoose.Schema({
 // Appointment schema to manage user appointments
 const appointmentSchema = new mongoose.Schema({
   fullname: { type: String, required: true },
-  nationalID: {
-    type: String,
-    required: true,
-    match: /^[0-9]+$/,
-    minlength: 10,
-    maxlength: 10,
-  },
+  nationalID: { type: String, required: true},
   accountNumber: { type: String, required: true },
   serviceType: { type: String, required: true },
   appointmentDate: {
