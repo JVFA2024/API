@@ -76,7 +76,7 @@ app.post('/api/general_query', authenticateToken, async (req, res) => {
   try {
       const { prompt } = req.body;  // Make sure 'prompt' is being sent by the client
       console.log("Sending query to Flask:", prompt);
-      const response = await fetch("http://127.0.0.1:5000/general_query", {
+      const response = await fetch("http://34.125.153.216:3000/general_query", {
           method: "POST",
           headers: {
               "Content-Type": "application/json",
