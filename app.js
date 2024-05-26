@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 const corsOptions = {
-  origin: 'http://localhost:5173', // Adjust as per your React app's URL
+  origin: 'https://finaljvfa-su58.vercel.app', // Adjust as per your React app's URL
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
